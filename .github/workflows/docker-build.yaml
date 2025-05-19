@@ -1,0 +1,30 @@
+name: deepsurf update
+on: [push]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: 135.181.86.159
+          username: root
+          password: baxtcMPbdpNcChTMjWv3
+          script: |
+           sudo rm -rf Deepsurf.ai
+            if pm2 list | grep -q deepsurf; then
+              pm2 delete deepsurf
+            fi
+            gh repo clone HarrisSagiris/Deepsurf.ai
+            cd Deepsurf.ai
+            npm install
+            npm run build
+            pm2 start npm --name deepsurf -- start
+            echo "✅ website is live"
+
+##DONT CODE BEYOND THESE LINES !!
+## Authored by @harris.dev
+################################################################
